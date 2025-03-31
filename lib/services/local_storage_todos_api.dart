@@ -14,6 +14,7 @@ class LocalStorageTodosApi extends TodosApi {
 
   @override
   Future<List<Task>> getTasks() async {
+    // await Future.delayed(const Duration(seconds: 3));
     return _box.values.toList();
   }
 
