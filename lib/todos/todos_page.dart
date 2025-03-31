@@ -27,6 +27,11 @@ class TodosView extends StatelessWidget {
       body: Center(
         child: Text("Todos"),
       ),
+      floatingActionButton: FloatingActionButton(
+        shape: const CircleBorder(),
+        onPressed: () => {print("Add todo")},
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

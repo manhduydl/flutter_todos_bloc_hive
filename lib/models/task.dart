@@ -16,23 +16,28 @@ class Task extends HiveObject {
   @HiveField(4)
   bool isCompleted;
 
-  Task(
-      {required this.id,
-      required this.title,
-      required this.note,
-      required this.dueDate,
-      required this.isCompleted});
-
-  factory Task.create({
-    required String? title,
-    required String? note,
+  Task({
+    String? id,
+    required this.title,
+    this.note = "",
     DateTime? dueDate,
-  }) =>
-      Task(
-        id: const Uuid().v4(),
-        title: title ?? "",
-        note: note ?? "",
-        dueDate: dueDate ?? DateTime.now(),
-        isCompleted: false,
-      );
+    this.isCompleted = false,
+  })  : id = id ?? Uuid().v4(),
+        dueDate = dueDate ?? DateTime.now();
+
+  Task copyWith({
+    String? id,
+    String? title,
+    String? note,
+    DateTime? dueDate,
+    bool? isCompleted,
+  }) {
+    return Task(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      note: note ?? this.note,
+      dueDate: dueDate ?? this.dueDate,
+      isCompleted: isCompleted ?? this.isCompleted,
+    );
+  }
 }
