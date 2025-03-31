@@ -28,6 +28,14 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+
+  # Bloc state management
+  flutter_bloc: any
+  equatable: any
+
+  hive: any
+  hive_flutter: any
+
   flutter:
     sdk: flutter
 
@@ -36,6 +44,9 @@ dependencies:
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
+  hive_generator: any
+  build_runner: any
+
   flutter_test:
     sdk: flutter
 
