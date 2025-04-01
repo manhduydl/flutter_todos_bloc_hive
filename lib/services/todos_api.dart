@@ -1,17 +1,17 @@
-import 'package:flutter_todos_bloc_hive/models/task.dart';
+import 'package:flutter_todos_bloc_hive/models/todo.dart';
 
 abstract class TodosApi {
   const TodosApi();
 
   // Get all tasks
-  Future<List<Task>> getTasks();
+  Future<List<Todo>> getTodos();
 
   // Get task by id
-  Task? getTaskById({required String id});
+  Todo? getTodoById({required String id});
 
   // Add new task
-  Future<void> addTask(Task task);
+  Future<void> addTodo(Todo todo);
 
   // Delete task
-  Future<void> deleteTask(String id);
+  Future<void> deleteTodo(String id);
 }

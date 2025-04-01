@@ -1,10 +1,13 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_todos_bloc_hive/todos/bloc/todos_bloc.dart';
 import 'package:flutter_todos_bloc_hive/todos/widgets/todo_list_tile.dart';
 
+import '../constants/colors.dart';
 import '../edit_todo/edit_todo_page.dart';
+import '../models/todo.dart';
 import '../services/todos_api.dart';
 
 class TodosPage extends StatelessWidget {
@@ -13,8 +16,7 @@ class TodosPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          TodosBloc(context.read<TodosApi>())..add(LoadTodosEvent()),
+      create: (context) => TodosBloc(todosApi: context.read<TodosApi>())..add(TodosInitEvent()),
       child: const TodosView(),
     );
   }
@@ -23,75 +25,139 @@ class TodosPage extends StatelessWidget {
 class TodosView extends StatelessWidget {
   const TodosView({super.key});
 
+  void _showEditTodoPage(BuildContext context, Todo? todo) async {
+    final bool? result = await Navigator.of(context).push<bool>(EditTodoPage.route(initialTodo: todo));
+    if (result == true && context.mounted) {
+      context.read<TodosBloc>().add(LoadTodosEvent());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: dBGColor,
       appBar: AppBar(
         title: Text("Todos"),
         backgroundColor: Colors.blue,
       ),
       body: BlocListener<TodosBloc, TodosState>(
         listener: (context, state) {
-          print(state);
+          // print(state);
+          if (state.shouldRemindTodo) {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text("Reminder"),
+                content: const Text('Task due date today'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            );
+          }
         },
         child: BlocBuilder<TodosBloc, TodosState>(
           builder: (context, state) {
-            if (state is TodosLoadedState) {
-              if (state.tasks.isEmpty) {
+            if (state.status == TodosStatus.success) {
+              if (state.todos.isEmpty) {
                 return const Center(
                   child: Text("No tasks"),
                 );
               }
-              // return Center(
-              //   child: Text("${state.tasks}"),
-              // );
-              return CupertinoScrollbar(
-                child: ListView.builder(
-                  itemCount: state.tasks.length,
-                  itemBuilder: (_, index) {
-                    final task = state.tasks.elementAt(index);
-                    return TodoListTile(
-                      task: task,
-                      onToggleCompleted: (isCompleted) {
-                        // context.read<TodosBloc>().add(
-                        //   TodosOverviewTodoCompletionToggled(
-                        //     todo: todo,
-                        //     isCompleted: isCompleted,
-                        //   ),
-                        // );
-                        print("task toggle");
-                      },
-                      onDismissed: (_) {
-                        // context
-                        //     .read<TodosOverviewBloc>()
-                        //     .add(TodosOverviewTodoDeleted(todo));
-                      },
-                      onTap: () {
-                        Navigator.of(context).push(
-                          EditTodoPage.route(initialTodo: task),
-                        );
-                      },
-                    );
-                  },
+              return Scrollbar(
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                  child: Column(
+                    children: <Widget>[
+                      _SearchBox(),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: state.filteredTodos.length,
+                          itemBuilder: (_, index) {
+                            final todo = state.filteredTodos.elementAt(index);
+                            return TodoListTile(
+                              todo: todo,
+                              onToggleCompleted: (isCompleted) {
+                                context.read<TodosBloc>().add(TodoCompletionToggled(
+                                      todo: todo,
+                                      isCompleted: isCompleted,
+                                    ));
+                              },
+                              onDismissed: (_) {
+                                context.read<TodosBloc>().add(TodoDeleted(todo));
+                              },
+                              onTap: () => _showEditTodoPage(context, todo),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             }
-            return const Center(child: CupertinoActivityIndicator());
+            return const Center(child: CircularProgressIndicator());
           },
         ),
       ),
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(),
-        onPressed: () async {
-          final bool? result =
-              await Navigator.of(context).push<bool>(EditTodoPage.route());
-          if (result == true) {
-            if (context.mounted) {
-              context.read<TodosBloc>().add(LoadTodosEvent());
-            }
-          }
-        },
+        onPressed: () => _showEditTodoPage(context, null),
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+/*
+ * Search box widget
+ */
+class _SearchBox extends StatefulWidget {
+  const _SearchBox({super.key});
+
+  @override
+  State<_SearchBox> createState() => _SearchBoxState();
+}
+
+class _SearchBoxState extends State<_SearchBox> {
+  Timer? _debounce;
+
+  void _onSearchChanged(BuildContext context, String query) {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 400), () {
+      context.read<TodosBloc>().add(TodosSearchQueryChanged(query));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 20),
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: TextField(
+        onChanged: (value) => _onSearchChanged(context, value),
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.all(0),
+          prefixIcon: Icon(
+            Icons.search,
+            color: dBlack,
+            size: 20,
+          ),
+          prefixIconConstraints: BoxConstraints(
+            maxHeight: 20,
+            minWidth: 25,
+          ),
+          border: InputBorder.none,
+          hintText: 'Search',
+          hintStyle: TextStyle(color: dGrey),
+        ),
       ),
     );
   }

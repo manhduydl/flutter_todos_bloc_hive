@@ -1,20 +1,43 @@
 part of 'todos_bloc.dart';
 
-sealed class TodosState extends Equatable {
-  const TodosState();
-}
+enum TodosStatus { initial, loading, success, failure }
 
-final class TodosInitial extends TodosState {
+final class TodosState extends Equatable {
+  const TodosState({
+    this.status = TodosStatus.initial,
+    this.todos = const [],
+    this.shouldRemindTodo = false,
+    this.searchQuery,
+  });
+
+  final TodosStatus status;
+  final List<Todo> todos;
+  final bool shouldRemindTodo;
+  final String? searchQuery;
+
+  List<Todo> get filteredTodos => (searchQuery?.isEmpty ?? true)
+      ? todos
+      : todos.where((todo) => todo.title.toLowerCase().contains(searchQuery!.toLowerCase())).toList();
+
+  TodosState copyWith({
+    TodosStatus? status,
+    List<Todo>? todos,
+    bool? shouldRemindTodo,
+    String? searchQuery,
+  }) {
+    return TodosState(
+      status: status ?? this.status,
+      todos: todos ?? this.todos,
+      shouldRemindTodo: shouldRemindTodo ?? this.shouldRemindTodo,
+      searchQuery: searchQuery ?? this.searchQuery,
+    );
+  }
+
   @override
-  List<Object> get props => [];
-}
-
-final class TodosLoadedState extends TodosState {
-  final List<Task> tasks;
-
-  TodosLoadedState(this.tasks);
-
-  @override
-  // TODO: implement props
-  List<Object?> get props => [tasks];
+  List<Object?> get props => [
+        status,
+        todos,
+        shouldRemindTodo,
+        searchQuery,
+      ];
 }

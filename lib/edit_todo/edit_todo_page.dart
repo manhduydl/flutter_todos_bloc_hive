@@ -1,17 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_todos_bloc_hive/services/todos_api.dart';
 
-import '../models/task.dart';
+import '../models/todo.dart';
 import '../utils/date_util.dart';
 import 'bloc/edit_todo_bloc.dart';
 
 class EditTodoPage extends StatelessWidget {
   const EditTodoPage({super.key});
 
-  static Route<bool> route({Task? initialTodo}) {
+  static Route<bool> route({Todo? initialTodo}) {
     return MaterialPageRoute(
       fullscreenDialog: true,
       builder: (context) => BlocProvider(
@@ -27,10 +26,8 @@ class EditTodoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<EditTodoBloc, EditTodoState>(
-      listenWhen: (previous, current) =>
-          previous.status != current.status &&
-          current.status == EditTodoStatus.success,
-      listener: (context, state) => Navigator.of(context).pop(true),
+      listenWhen: (previous, current) => previous.status != current.status && current.status == EditTodoStatus.success,
+      listener: (context, state) => {Navigator.of(context).pop(true)},
       child: const EditTodoView(),
     );
   }
@@ -53,26 +50,16 @@ class EditTodoView extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        shape: const ContinuousRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(32)),
-        ),
-        onPressed: status.isLoadingOrSuccess
-            ? null
-            : () => context.read<EditTodoBloc>().add(const EditTodoSubmitted()),
-        child: status.isLoadingOrSuccess
-            ? const CupertinoActivityIndicator()
-            : const Icon(Icons.check_rounded),
+        shape: const CircleBorder(),
+        onPressed: status.isLoadingOrSuccess ? null : () => context.read<EditTodoBloc>().add(const EditTodoSubmitted()),
+        child: status.isLoadingOrSuccess ? const CircularProgressIndicator() : const Icon(Icons.check_rounded),
       ),
-      body: const CupertinoScrollbar(
+      body: const Scrollbar(
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(16),
             child: Column(
-              children: [
-                _TitleField(),
-                _DescriptionField(),
-                _DueDateSelection()
-              ],
+              children: [_TitleField(), _DueDateSelection()],
             ),
           ),
         ),
@@ -121,15 +108,12 @@ class _TitleField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<EditTodoBloc>().state;
-    final hintText = state.initialTodo?.title ?? '';
 
     return TextFormField(
-      key: const Key('editTodoView_title_textFormField'),
       initialValue: state.title,
       decoration: InputDecoration(
         enabled: !state.status.isLoadingOrSuccess,
         labelText: "Title",
-        hintText: hintText,
       ),
       maxLength: 50,
       inputFormatters: [
@@ -138,34 +122,6 @@ class _TitleField extends StatelessWidget {
       ],
       onChanged: (value) {
         context.read<EditTodoBloc>().add(EditTodoTitleChanged(value));
-      },
-    );
-  }
-}
-
-class _DescriptionField extends StatelessWidget {
-  const _DescriptionField();
-
-  @override
-  Widget build(BuildContext context) {
-    final state = context.watch<EditTodoBloc>().state;
-    final hintText = state.initialTodo?.note ?? '';
-
-    return TextFormField(
-      key: const Key('editTodoView_description_textFormField'),
-      initialValue: state.note,
-      decoration: InputDecoration(
-        enabled: !state.status.isLoadingOrSuccess,
-        labelText: "Note",
-        hintText: hintText,
-      ),
-      maxLength: 300,
-      maxLines: 7,
-      inputFormatters: [
-        LengthLimitingTextInputFormatter(300),
-      ],
-      onChanged: (value) {
-        context.read<EditTodoBloc>().add(EditTodoDescriptionChanged(value));
       },
     );
   }

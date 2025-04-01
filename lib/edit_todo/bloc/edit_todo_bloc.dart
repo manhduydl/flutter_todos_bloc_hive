@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../models/task.dart';
+import '../../models/todo.dart';
 import '../../services/todos_api.dart';
 
 part 'edit_todo_event.dart';
@@ -10,17 +10,12 @@ part 'edit_todo_state.dart';
 class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
   EditTodoBloc({
     required TodosApi todosRepository,
-    required Task? initialTodo,
+    required Todo? initialTodo,
   })  : _todosApi = todosRepository,
         super(
-          EditTodoState(
-              initialTodo: initialTodo,
-              title: initialTodo?.title ?? '',
-              note: initialTodo?.note ?? '',
-              dueDate: initialTodo?.dueDate),
+          EditTodoState(initialTodo: initialTodo, title: initialTodo?.title ?? '', dueDate: initialTodo?.dueDate),
         ) {
     on<EditTodoTitleChanged>(_onTitleChanged);
-    on<EditTodoDescriptionChanged>(_onDescriptionChanged);
     on<EditTodoSubmitted>(_onSubmitted);
     on<EditTodoDueDateChanged>(_onDueDateChanged);
   }
@@ -32,13 +27,6 @@ class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
     Emitter<EditTodoState> emit,
   ) {
     emit(state.copyWith(title: event.title));
-  }
-
-  void _onDescriptionChanged(
-    EditTodoDescriptionChanged event,
-    Emitter<EditTodoState> emit,
-  ) {
-    emit(state.copyWith(note: event.description));
   }
 
   void _onDueDateChanged(
@@ -53,14 +41,14 @@ class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
     Emitter<EditTodoState> emit,
   ) async {
     emit(state.copyWith(status: EditTodoStatus.loading));
-    final todo = (state.initialTodo ?? Task(title: '')).copyWith(
+    final todo = (state.initialTodo ?? Todo(title: '')).copyWith(
       title: state.title,
-      note: state.note,
       dueDate: state.dueDate,
     );
 
     try {
-      await _todosApi.addTask(todo);
+      await _todosApi.addTodo(todo);
+      print("todo saved $state");
       emit(state.copyWith(status: EditTodoStatus.success));
     } catch (e) {
       emit(state.copyWith(status: EditTodoStatus.failure));
