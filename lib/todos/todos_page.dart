@@ -82,11 +82,14 @@ class TodosView extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(),
-        onPressed: () => {
-          print("Add todo"),
-          Navigator.of(context).push(
-            EditTodoPage.route(initialTodo: null),
-          ),
+        onPressed: () async {
+          final bool? result =
+              await Navigator.of(context).push<bool>(EditTodoPage.route());
+          if (result == true) {
+            if (context.mounted) {
+              context.read<TodosBloc>().add(LoadTodosEvent());
+            }
+          }
         },
         child: const Icon(Icons.add),
       ),

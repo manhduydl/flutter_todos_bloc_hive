@@ -38,6 +38,8 @@ dependencies:
 
   uuid: any
 
+  intl: ^0.20.2
+
   flutter:
     sdk: flutter
 

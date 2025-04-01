@@ -14,14 +14,15 @@ class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
   })  : _todosApi = todosRepository,
         super(
           EditTodoState(
-            initialTodo: initialTodo,
-            title: initialTodo?.title ?? '',
-            note: initialTodo?.note ?? '',
-          ),
+              initialTodo: initialTodo,
+              title: initialTodo?.title ?? '',
+              note: initialTodo?.note ?? '',
+              dueDate: initialTodo?.dueDate),
         ) {
     on<EditTodoTitleChanged>(_onTitleChanged);
     on<EditTodoDescriptionChanged>(_onDescriptionChanged);
     on<EditTodoSubmitted>(_onSubmitted);
+    on<EditTodoDueDateChanged>(_onDueDateChanged);
   }
 
   final TodosApi _todosApi;
@@ -40,6 +41,13 @@ class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
     emit(state.copyWith(note: event.description));
   }
 
+  void _onDueDateChanged(
+    EditTodoDueDateChanged event,
+    Emitter<EditTodoState> emit,
+  ) {
+    emit(state.copyWith(dueDate: event.dueDate));
+  }
+
   Future<void> _onSubmitted(
     EditTodoSubmitted event,
     Emitter<EditTodoState> emit,
@@ -48,10 +56,11 @@ class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
     final todo = (state.initialTodo ?? Task(title: '')).copyWith(
       title: state.title,
       note: state.note,
+      dueDate: state.dueDate,
     );
 
     try {
-      // await _todosApi.saveTodo(todo);
+      await _todosApi.addTask(todo);
       emit(state.copyWith(status: EditTodoStatus.success));
     } catch (e) {
       emit(state.copyWith(status: EditTodoStatus.failure));

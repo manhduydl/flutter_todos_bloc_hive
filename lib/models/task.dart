@@ -1,10 +1,11 @@
+import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
 part 'task.g.dart';
 
 @HiveType(typeId: 0)
-class Task extends HiveObject {
+class Task extends Equatable {
   @HiveField(0)
   final String id;
   @HiveField(1)
@@ -40,4 +41,8 @@ class Task extends HiveObject {
       isCompleted: isCompleted ?? this.isCompleted,
     );
   }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [id, title, note, dueDate, isCompleted];
 }

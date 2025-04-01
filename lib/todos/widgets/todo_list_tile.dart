@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_todos_bloc_hive/models/task.dart';
 
+import '../../utils/date_util.dart';
+
 class TodoListTile extends StatelessWidget {
   const TodoListTile({
     required this.task,
@@ -47,7 +49,7 @@ class TodoListTile extends StatelessWidget {
                 ),
         ),
         subtitle: Text(
-          task.note,
+          showDate(task.dueDate),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
