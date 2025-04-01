@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_todos_bloc_hive/todos/bloc/todos_bloc.dart';
 import 'package:flutter_todos_bloc_hive/todos/widgets/todo_list_tile.dart';
 
-import '../constants/colors.dart';
 import '../edit_todo/edit_todo_page.dart';
 import '../models/todo.dart';
 import '../services/todos_api.dart';
@@ -35,10 +34,9 @@ class TodosView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: dBGColor,
       appBar: AppBar(
         title: Text("Todos"),
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: BlocListener<TodosBloc, TodosState>(
         listener: (context, state) {
@@ -172,10 +170,10 @@ class _SearchBoxState extends State<_SearchBox> {
       child: TextField(
         onChanged: (value) => _onSearchChanged(context, value),
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.all(0),
+          contentPadding: EdgeInsets.all(10),
           prefixIcon: Icon(
             Icons.search,
-            color: dBlack,
+            color: Colors.grey,
             size: 20,
           ),
           prefixIconConstraints: BoxConstraints(
@@ -184,7 +182,7 @@ class _SearchBoxState extends State<_SearchBox> {
           ),
           border: InputBorder.none,
           hintText: 'Search',
-          hintStyle: TextStyle(color: dGrey),
+          hintStyle: TextStyle(color: Colors.grey),
         ),
       ),
     );

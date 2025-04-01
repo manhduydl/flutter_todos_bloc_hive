@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_todos_bloc_hive/models/todo.dart';
 
-import '../../constants/colors.dart';
 import '../../utils/date_util.dart';
 
 class TodoListTile extends StatelessWidget {
@@ -21,16 +20,19 @@ class TodoListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final captionColor = theme.textTheme.bodySmall?.color;
 
     return Dismissible(
       key: Key('todoListTile_dismissible_${todo.id}'),
       onDismissed: onDismissed,
       direction: DismissDirection.endToStart,
       background: Container(
+        margin: const EdgeInsets.only(bottom: 20),
         alignment: Alignment.centerRight,
-        color: theme.colorScheme.error,
         padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.error,
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
         child: const Icon(
           Icons.delete,
           color: Color(0xAAFFFFFF),
@@ -42,6 +44,7 @@ class TodoListTile extends StatelessWidget {
           onTap: onTap,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
+            side: BorderSide(color: Colors.grey.shade300, width: 1),
           ),
           contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
           tileColor: Colors.white,
@@ -56,7 +59,7 @@ class TodoListTile extends StatelessWidget {
             todo.title,
             style: TextStyle(
               fontSize: 18,
-              color: dBlack,
+              color: Colors.black,
               decoration: todo.isCompleted ? TextDecoration.lineThrough : null,
             ),
           ),
@@ -66,7 +69,7 @@ class TodoListTile extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 14,
-              color: dGrey,
+              color: Colors.grey,
             ),
           ),
           trailing: onTap == null ? null : const Icon(Icons.chevron_right),

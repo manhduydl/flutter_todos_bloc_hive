@@ -61,8 +61,9 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
     return todoDueDateToday.isNotEmpty;
   }
 
-  FutureOr<void> _onTodoDeleted(TodoDeleted event, Emitter<TodosState> emit) {
-    _todosApi.deleteTodo(event.todo.id);
+  Future<void> _onTodoDeleted(TodoDeleted event, Emitter<TodosState> emit) async {
+    await _todosApi.deleteTodo(event.todo.id);
+    add(LoadTodosEvent());
   }
 
   FutureOr<void> _onTodosSearchQueryChanged(
