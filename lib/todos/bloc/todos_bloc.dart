@@ -27,8 +27,9 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
     LoadTodosEvent event,
     Emitter<TodosState> emit,
   ) async {
+    emit(state.copyWith(status: TodosStatus.loading));
+    // await Future.delayed(Duration(seconds: 3));
     final todos = await _todosApi.getTodos();
-    print("_onLoadTodosEvent $todos");
     emit(state.copyWith(status: TodosStatus.success, todos: todos));
   }
 

@@ -61,45 +61,46 @@ class TodosView extends StatelessWidget {
         },
         child: BlocBuilder<TodosBloc, TodosState>(
           builder: (context, state) {
-            if (state.status == TodosStatus.success) {
-              if (state.todos.isEmpty) {
-                return const Center(
-                  child: Text("No tasks"),
-                );
+            if (state.todos.isEmpty) {
+              if (state.status == TodosStatus.loading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state.status != TodosStatus.success) {
+                return const SizedBox.shrink();
+              } else {
+                return _EmptyWidget();
               }
-              return Scrollbar(
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                  child: Column(
-                    children: <Widget>[
-                      _SearchBox(),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: state.filteredTodos.length,
-                          itemBuilder: (_, index) {
-                            final todo = state.filteredTodos.elementAt(index);
-                            return TodoListTile(
-                              todo: todo,
-                              onToggleCompleted: (isCompleted) {
-                                context.read<TodosBloc>().add(TodoCompletionToggled(
-                                      todo: todo,
-                                      isCompleted: isCompleted,
-                                    ));
-                              },
-                              onDismissed: (_) {
-                                context.read<TodosBloc>().add(TodoDeleted(todo));
-                              },
-                              onTap: () => _showEditTodoPage(context, todo),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
             }
-            return const Center(child: CircularProgressIndicator());
+            return Scrollbar(
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                child: Column(
+                  children: <Widget>[
+                    _SearchBox(),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: state.filteredTodos.length,
+                        itemBuilder: (_, index) {
+                          final todo = state.filteredTodos.elementAt(index);
+                          return TodoListTile(
+                            todo: todo,
+                            onToggleCompleted: (isCompleted) {
+                              context.read<TodosBloc>().add(TodoCompletionToggled(
+                                    todo: todo,
+                                    isCompleted: isCompleted,
+                                  ));
+                            },
+                            onDismissed: (_) {
+                              context.read<TodosBloc>().add(TodoDeleted(todo));
+                            },
+                            onTap: () => _showEditTodoPage(context, todo),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
           },
         ),
       ),
@@ -107,6 +108,33 @@ class TodosView extends StatelessWidget {
         shape: const CircleBorder(),
         onPressed: () => _showEditTodoPage(context, null),
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+/*
+ * Empty widget
+ */
+class _EmptyWidget extends StatelessWidget {
+  const _EmptyWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        spacing: 16,
+        children: [
+          const Text(
+            "No Content Available",
+            style: TextStyle(fontSize: 20),
+          ),
+          ElevatedButton(
+            onPressed: () => context.read<TodosBloc>().add(LoadTodosEvent()),
+            child: const Text("Refresh"),
+          ),
+        ],
       ),
     );
   }

@@ -17,7 +17,7 @@ final class TodosState extends Equatable {
 
   List<Todo> get filteredTodos => (searchQuery?.isEmpty ?? true)
       ? todos
-      : todos.where((todo) => todo.title.toLowerCase().contains(searchQuery!.toLowerCase())).toList();
+      : todos.where((todo) => todo.title.trim().toLowerCase().contains(searchQuery!.trim().toLowerCase())).toList();
 
   TodosState copyWith({
     TodosStatus? status,
