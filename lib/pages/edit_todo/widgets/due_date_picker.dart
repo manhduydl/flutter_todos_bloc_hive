@@ -12,7 +12,7 @@ class DueDatePicker extends StatelessWidget {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: context.read<EditTodoBloc>().state.dueDate ?? DateTime.now(),
-      firstDate: DateTime(2020),
+      firstDate: DateTime.now(),
       lastDate: DateTime(2030),
     );
     if (picked != null && context.mounted) {
