@@ -5,7 +5,7 @@ String showDate(DateTime? date, {String placeholder = "No due date"}) {
   if (date == null) {
     return placeholder;
   }
-  return DateFormat.yMMMEd().format(date).toString();
+  return DateFormat.yMMMd().format(date).toString();
 }
 
 extension DateOnlyCompare on DateTime {
