@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_todos_bloc_hive/constants/colors.dart';
 import 'package:flutter_todos_bloc_hive/models/todo.dart';
 
 import '../../utils/date_util.dart';
@@ -40,39 +41,44 @@ class TodoListTile extends StatelessWidget {
       ),
       child: Container(
         margin: const EdgeInsets.only(bottom: 20),
-        child: ListTile(
-          onTap: onTap,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-            side: BorderSide(color: Colors.grey.shade300, width: 1),
-          ),
-          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-          tileColor: Colors.white,
-          leading: Checkbox(
-            shape: const ContinuousRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+          elevation: 2,
+          shadowColor: AppColors.shadowColor,
+          child: ListTile(
+            onTap: onTap,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
             ),
-            value: todo.isCompleted,
-            onChanged: onToggleCompleted == null ? null : (value) => onToggleCompleted!(value!),
-          ),
-          title: Text(
-            todo.title,
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.black,
-              decoration: todo.isCompleted ? TextDecoration.lineThrough : null,
+            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            tileColor: Colors.white,
+            leading: Checkbox(
+              shape: const ContinuousRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+              ),
+              value: todo.isCompleted,
+              onChanged: onToggleCompleted == null ? null : (value) => onToggleCompleted!(value!),
             ),
-          ),
-          subtitle: Text(
-            showDate(todo.dueDate),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey,
+            title: Text(
+              todo.title,
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.black,
+                decoration: todo.isCompleted ? TextDecoration.lineThrough : null,
+              ),
             ),
+            subtitle: Text(
+              showDate(todo.dueDate),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
+            ),
+            trailing: onTap == null ? null : const Icon(Icons.chevron_right),
           ),
-          trailing: onTap == null ? null : const Icon(Icons.chevron_right),
         ),
       ),
     );

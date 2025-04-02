@@ -1,4 +1,7 @@
-// class AppColors {
-//   static const Color grey = Color(0xFF717171);
-//   static const Color bgColor = Color(0xFFEEEFF5);
-// }
+import 'dart:ui';
+
+class AppColors {
+  AppColors._();
+
+  static const Color shadowColor = Color.fromRGBO(149, 157, 165, 0.2);
+}

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_todos_bloc_hive/constants/colors.dart';
 import 'package:flutter_todos_bloc_hive/todos/bloc/todos_bloc.dart';
 import 'package:flutter_todos_bloc_hive/todos/widgets/todo_list_tile.dart';
 
@@ -163,10 +164,14 @@ class _SearchBoxState extends State<_SearchBox> {
     return Container(
       margin: EdgeInsets.only(bottom: 20),
       padding: EdgeInsets.symmetric(horizontal: 15),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), boxShadow: [
+        BoxShadow(
+          color: AppColors.shadowColor,
+          blurRadius: 24,
+          spreadRadius: 0,
+          offset: Offset(0, 8),
+        ),
+      ]),
       child: TextField(
         onChanged: (value) => _onSearchChanged(context, value),
         decoration: InputDecoration(
