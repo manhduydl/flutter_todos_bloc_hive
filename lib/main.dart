@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_todos_bloc_hive/repository/todos_repository.dart';
 import 'package:flutter_todos_bloc_hive/services/local_storage_todos_api.dart';
 
 import 'app/app.dart';
@@ -9,8 +10,9 @@ void main() async {
   Bloc.observer = const AppBlocObserver();
   var localStorageTodosApi = LocalStorageTodosApi();
   await localStorageTodosApi.init();
+  final TodosRepository todosRepository = TodosRepository(todosApi: localStorageTodosApi);
   runApp(App(
-    todosApi: localStorageTodosApi,
+    todosRepository: todosRepository,
   ));
 }
 

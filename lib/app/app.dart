@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_todos_bloc_hive/services/todos_api.dart';
+import 'package:flutter_todos_bloc_hive/repository/todos_repository.dart';
 
 import '../pages/todos/todos_page.dart';
 
 class App extends StatelessWidget {
-  const App({super.key, required this.todosApi});
+  const App({super.key, required this.todosRepository});
 
-  final TodosApi todosApi;
+  final TodosRepository todosRepository;
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider<TodosApi>(
-      create: (context) => todosApi,
+    return RepositoryProvider<TodosRepository>(
+      create: (context) => todosRepository,
       child: AppView(),
     );
   }

@@ -5,16 +5,16 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_todos_bloc_hive/utils/date_util.dart';
 
 import '../../../models/todo.dart';
-import '../../../services/todos_api.dart';
+import '../../../repository/todos_repository.dart';
 
 part 'todos_event.dart';
 part 'todos_state.dart';
 
 class TodosBloc extends Bloc<TodosEvent, TodosState> {
-  final TodosApi _todosApi;
+  final TodosRepository _todosRepository;
 
-  TodosBloc({required TodosApi todosApi})
-      : _todosApi = todosApi,
+  TodosBloc({required TodosRepository todosRepository})
+      : _todosRepository = todosRepository,
         super(TodosState()) {
     on<TodosInitEvent>(_onTodosInitEvent);
     on<LoadTodosEvent>(_onLoadTodosEvent);
@@ -31,7 +31,7 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
   ) async {
     emit(state.copyWith(status: TodosStatus.loading));
     // await Future.delayed(Duration(seconds: 3));
-    final todos = await _todosApi.getTodos();
+    final todos = await _todosRepository.getTodos();
     emit(state.copyWith(status: TodosStatus.success, todos: todos));
   }
 
@@ -39,7 +39,7 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
     TodosInitEvent event,
     Emitter<TodosState> emit,
   ) async {
-    final todos = await _todosApi.getTodos();
+    final todos = await _todosRepository.getTodos();
     final numTodosDueToday = _numTodosDueToday(todos);
     emit(state.copyWith(shouldRemindTodo: numTodosDueToday > 0, numTodosDueToday: numTodosDueToday));
     emit(state.copyWith(status: TodosStatus.success, todos: todos));
@@ -50,12 +50,12 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
     Emitter<TodosState> emit,
   ) async {
     final newTodo = event.todo.copyWith(isCompleted: event.isCompleted);
-    await _todosApi.addTodo(newTodo);
+    await _todosRepository.addTodo(newTodo);
     add(LoadTodosEvent());
   }
 
   Future<void> _onTodoDeleted(TodoDeleted event, Emitter<TodosState> emit) async {
-    await _todosApi.deleteTodo(event.todo.id);
+    await _todosRepository.deleteTodo(event.todo.id);
     add(LoadTodosEvent());
   }
 
@@ -67,7 +67,7 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
   }
 
   Future<void> _onTodosReminderCheck(TodosReminderCheck event, Emitter<TodosState> emit) async {
-    final todos = await _todosApi.getTodos();
+    final todos = await _todosRepository.getTodos();
     final numTodosDueToday = _numTodosDueToday(todos);
     emit(state.copyWith(shouldRemindTodo: numTodosDueToday > 0, numTodosDueToday: numTodosDueToday));
   }

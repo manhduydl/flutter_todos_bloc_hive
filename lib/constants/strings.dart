@@ -11,5 +11,5 @@ class AppString {
   static const String noChangeWarning = "Nothing change";
   static const String loadTodosError = "An error occurred while loading todos";
   static const String reminderTitle = "Reminder";
-  static const String reminderMessage = "task to be completed today";
+  static const String reminderMessage = "task need to be completed today";
 }

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_todos_bloc_hive/constants/strings.dart';
 import 'package:flutter_todos_bloc_hive/pages/edit_todo/widgets/due_date_picker.dart';
 import 'package:flutter_todos_bloc_hive/pages/edit_todo/widgets/todo_title_field.dart';
-import 'package:flutter_todos_bloc_hive/services/todos_api.dart';
+import 'package:flutter_todos_bloc_hive/repository/todos_repository.dart';
 
 import '../../models/todo.dart';
 import 'bloc/edit_todo_bloc.dart';
@@ -18,7 +18,7 @@ class EditTodoPage extends StatelessWidget {
       fullscreenDialog: true,
       builder: (context) => BlocProvider(
         create: (context) => EditTodoBloc(
-          todosRepository: context.read<TodosApi>(),
+          todosRepository: context.read<TodosRepository>(),
           initialTodo: initialTodo,
         ),
         child: EditTodoPage(originTodo: initialTodo),

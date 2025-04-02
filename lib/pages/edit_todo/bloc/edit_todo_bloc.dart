@@ -1,17 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_todos_bloc_hive/repository/todos_repository.dart';
 
 import '../../../models/todo.dart';
-import '../../../services/todos_api.dart';
 
 part 'edit_todo_event.dart';
 part 'edit_todo_state.dart';
 
 class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
   EditTodoBloc({
-    required TodosApi todosRepository,
+    required TodosRepository todosRepository,
     required Todo? initialTodo,
-  })  : _todosApi = todosRepository,
+  })  : _todosRepository = todosRepository,
         super(
           EditTodoState(initialTodo: initialTodo, title: initialTodo?.title ?? '', dueDate: initialTodo?.dueDate),
         ) {
@@ -20,7 +20,7 @@ class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
     on<EditTodoDueDateChanged>(_onDueDateChanged);
   }
 
-  final TodosApi _todosApi;
+  final TodosRepository _todosRepository;
 
   void _onTitleChanged(
     EditTodoTitleChanged event,
@@ -47,7 +47,7 @@ class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
     );
 
     try {
-      await _todosApi.addTodo(todo);
+      await _todosRepository.addTodo(todo);
       emit(state.copyWith(status: EditTodoStatus.success));
     } catch (e) {
       emit(state.copyWith(status: EditTodoStatus.failure));

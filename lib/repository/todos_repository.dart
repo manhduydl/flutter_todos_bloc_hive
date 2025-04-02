@@ -12,11 +12,11 @@ class TodosRepository {
   /// Receive list [todos] from API, sort and return it
   Future<List<Todo>> getTodos() async {
     List<Todo> todos = await _todosApi.getTodos();
-    todos.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    todos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return todos;
   }
 
-  Future<void> saveTodo(Todo todo) => _todosApi.addTodo(todo);
+  Future<void> addTodo(Todo todo) => _todosApi.addTodo(todo);
 
   Future<void> deleteTodo(String id) => _todosApi.deleteTodo(id);
 

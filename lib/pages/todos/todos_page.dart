@@ -7,9 +7,9 @@ import 'package:flutter_todos_bloc_hive/constants/strings.dart';
 import 'package:flutter_todos_bloc_hive/pages/todos/widgets/empty.dart';
 import 'package:flutter_todos_bloc_hive/pages/todos/widgets/search_box.dart';
 import 'package:flutter_todos_bloc_hive/pages/todos/widgets/todo_list_tile.dart';
+import 'package:flutter_todos_bloc_hive/repository/todos_repository.dart';
 
 import '../../models/todo.dart';
-import '../../services/todos_api.dart';
 import '../edit_todo/edit_todo_page.dart';
 import 'bloc/todos_bloc.dart';
 
@@ -19,7 +19,7 @@ class TodosPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => TodosBloc(todosApi: context.read<TodosApi>())..add(TodosInitEvent()),
+      create: (context) => TodosBloc(todosRepository: context.read<TodosRepository>())..add(TodosInitEvent()),
       child: const TodosView(),
     );
   }
