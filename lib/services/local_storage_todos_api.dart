@@ -32,4 +32,9 @@ class LocalStorageTodosApi extends TodosApi {
   Future<void> deleteTodo(String id) async {
     await _box.delete(id);
   }
+
+  @override
+  Future<void> close() async {
+    await _box.close();
+  }
 }

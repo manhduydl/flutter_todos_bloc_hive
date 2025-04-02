@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../constants/colors.dart';
+import '../../../constants/colors.dart';
 import '../bloc/todos_bloc.dart';
 
 class SearchBox extends StatefulWidget {

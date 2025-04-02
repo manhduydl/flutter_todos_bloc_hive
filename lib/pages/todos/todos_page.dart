@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_fgbg/flutter_fgbg.dart';
 import 'package:flutter_todos_bloc_hive/constants/strings.dart';
-import 'package:flutter_todos_bloc_hive/todos/bloc/todos_bloc.dart';
-import 'package:flutter_todos_bloc_hive/todos/widgets/empty.dart';
-import 'package:flutter_todos_bloc_hive/todos/widgets/search_box.dart';
-import 'package:flutter_todos_bloc_hive/todos/widgets/todo_list_tile.dart';
+import 'package:flutter_todos_bloc_hive/pages/todos/widgets/empty.dart';
+import 'package:flutter_todos_bloc_hive/pages/todos/widgets/search_box.dart';
+import 'package:flutter_todos_bloc_hive/pages/todos/widgets/todo_list_tile.dart';
 
+import '../../models/todo.dart';
+import '../../services/todos_api.dart';
 import '../edit_todo/edit_todo_page.dart';
-import '../models/todo.dart';
-import '../services/todos_api.dart';
+import 'bloc/todos_bloc.dart';
 
 class TodosPage extends StatelessWidget {
   const TodosPage({super.key});
@@ -79,8 +79,8 @@ class _TodosViewState extends State<TodosView> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Reminder"),
-        content: Text('${state.numTodosDueToday} task due today'),
+        title: const Text(AppString.reminderTitle),
+        content: Text('${state.numTodosDueToday} ${AppString.reminderMessage}'),
         actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
       ),
     ).then(

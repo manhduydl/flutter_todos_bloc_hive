@@ -14,4 +14,7 @@ abstract class TodosApi {
 
   // Delete task
   Future<void> deleteTodo(String id);
+
+  // Close database
+  Future<void> close();
 }

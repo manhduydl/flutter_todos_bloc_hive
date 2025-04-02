@@ -4,8 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_todos_bloc_hive/utils/date_util.dart';
 
-import '../../models/todo.dart';
-import '../../services/todos_api.dart';
+import '../../../models/todo.dart';
+import '../../../services/todos_api.dart';
 
 part 'todos_event.dart';
 part 'todos_state.dart';

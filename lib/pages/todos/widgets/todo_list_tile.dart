@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_todos_bloc_hive/constants/colors.dart';
 import 'package:flutter_todos_bloc_hive/models/todo.dart';
 
-import '../../utils/date_util.dart';
+import '../../../utils/date_util.dart';
 
 class TodoListTile extends StatelessWidget {
   const TodoListTile({
