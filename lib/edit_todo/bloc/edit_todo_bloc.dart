@@ -42,13 +42,12 @@ class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
   ) async {
     emit(state.copyWith(status: EditTodoStatus.loading));
     final todo = (state.initialTodo ?? Todo(title: '')).copyWith(
-      title: state.title,
+      title: state.title.trim(),
       dueDate: state.dueDate,
     );
 
     try {
       await _todosApi.addTodo(todo);
-      print("todo saved $state");
       emit(state.copyWith(status: EditTodoStatus.success));
     } catch (e) {
       emit(state.copyWith(status: EditTodoStatus.failure));

@@ -8,12 +8,14 @@ final class TodosState extends Equatable {
     this.todos = const [],
     this.shouldRemindTodo = false,
     this.searchQuery,
+    this.numTodosDueToday = 0,
   });
 
   final TodosStatus status;
   final List<Todo> todos;
   final bool shouldRemindTodo;
   final String? searchQuery;
+  final int numTodosDueToday;
 
   List<Todo> get filteredTodos => (searchQuery?.isEmpty ?? true)
       ? todos
@@ -24,12 +26,14 @@ final class TodosState extends Equatable {
     List<Todo>? todos,
     bool? shouldRemindTodo,
     String? searchQuery,
+    int? numTodosDueToday,
   }) {
     return TodosState(
       status: status ?? this.status,
       todos: todos ?? this.todos,
-      shouldRemindTodo: shouldRemindTodo ?? this.shouldRemindTodo,
+      shouldRemindTodo: shouldRemindTodo ?? false,
       searchQuery: searchQuery ?? this.searchQuery,
+      numTodosDueToday: numTodosDueToday ?? this.numTodosDueToday,
     );
   }
 

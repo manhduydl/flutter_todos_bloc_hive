@@ -41,3 +41,7 @@ class TodosSearchQueryChanged extends TodosEvent {
   @override
   List<Object> get props => [query];
 }
+
+class TodosReminderCheck extends TodosEvent {}
+
+class TodosFinishRemind extends TodosEvent {}

@@ -18,12 +18,19 @@ class TodoListTile extends StatelessWidget {
   final DismissDirectionCallback? onDismissed;
   final VoidCallback? onTap;
 
+  bool _todoIsOverdue() {
+    if (todo.isCompleted) {
+      return false;
+    }
+    return todo.dueDate != null && DateTime.now().isAfter(todo.dueDate!);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Dismissible(
-      key: Key('todoListTile_dismissible_${todo.id}'),
+      key: Key('todoListTile_${todo.id}'),
       onDismissed: onDismissed,
       direction: DismissDirection.endToStart,
       background: Container(
@@ -74,7 +81,7 @@ class TodoListTile extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey,
+                color: _todoIsOverdue() ? Colors.red : Colors.grey,
               ),
             ),
             trailing: onTap == null ? null : const Icon(Icons.chevron_right),
