@@ -30,13 +30,13 @@ environment:
 dependencies:
 
   # Bloc state management
-  flutter_bloc: any
-  equatable: any
+  flutter_bloc: ^9.1.0
+  equatable: ^2.0.7
 
-  hive: any
-  hive_flutter: any
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 
-  uuid: any
+  uuid: ^4.5.1
 
   intl: ^0.20.2
 
@@ -50,8 +50,8 @@ dependencies:
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
-  hive_generator: any
-  build_runner: any
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.15
 
   mocktail: ^1.0.4
 
