@@ -9,9 +9,7 @@ import '../../models/todo.dart';
 import 'bloc/edit_todo_bloc.dart';
 
 class EditTodoPage extends StatelessWidget {
-  const EditTodoPage({super.key, this.originTodo});
-
-  final Todo? originTodo;
+  const EditTodoPage({super.key});
 
   static Route<bool> route({Todo? initialTodo}) {
     return MaterialPageRoute(
@@ -21,7 +19,7 @@ class EditTodoPage extends StatelessWidget {
           todosRepository: context.read<TodosRepository>(),
           initialTodo: initialTodo,
         ),
-        child: EditTodoPage(originTodo: initialTodo),
+        child: EditTodoPage(),
       ),
     );
   }
@@ -31,15 +29,13 @@ class EditTodoPage extends StatelessWidget {
     return BlocListener<EditTodoBloc, EditTodoState>(
       listenWhen: (previous, current) => previous.status != current.status && current.status == EditTodoStatus.success,
       listener: (context, state) => {Navigator.of(context).pop(true)},
-      child: EditTodoView(originTodo: originTodo),
+      child: EditTodoView(),
     );
   }
 }
 
 class EditTodoView extends StatefulWidget {
-  const EditTodoView({super.key, this.originTodo});
-
-  final Todo? originTodo;
+  const EditTodoView({super.key});
 
   @override
   State<EditTodoView> createState() => _EditTodoViewState();
@@ -56,7 +52,8 @@ class _EditTodoViewState extends State<EditTodoView> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      if (_isSameOriginTodo()) {
+      final state = context.read<EditTodoBloc>().state;
+      if (state.isNothingChanged) {
         if (_isCurrentSnackBarVisible) {
           return;
         }
@@ -82,12 +79,6 @@ class _EditTodoViewState extends State<EditTodoView> {
       }
       context.read<EditTodoBloc>().add(EditTodoSubmitted());
     }
-  }
-
-  bool _isSameOriginTodo() {
-    final originTodo = widget.originTodo;
-    final dueDate = context.read<EditTodoBloc>().state.dueDate;
-    return originTodo != null && originTodo.title == _title && originTodo.dueDate == dueDate;
   }
 
   @override

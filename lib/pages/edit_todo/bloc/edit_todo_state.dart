@@ -24,6 +24,13 @@ final class EditTodoState extends Equatable {
 
   bool get isNewTodo => initialTodo == null;
 
+  bool get isNothingChanged {
+    if (initialTodo == null) {
+      return false;
+    }
+    return initialTodo!.title == title && initialTodo!.dueDate == dueDate;
+  }
+
   EditTodoState copyWith({
     EditTodoStatus? status,
     Todo? initialTodo,
