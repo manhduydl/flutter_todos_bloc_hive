@@ -27,7 +27,9 @@ class EditTodoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<EditTodoBloc, EditTodoState>(
-      listenWhen: (previous, current) => previous.status != current.status && current.status == EditTodoStatus.success,
+      listenWhen: (previous, current) =>
+          previous.status != current.status &&
+          current.status == EditTodoStatus.success,
       listener: (context, state) => {Navigator.of(context).pop(true)},
       child: EditTodoView(),
     );
@@ -49,6 +51,12 @@ class _EditTodoViewState extends State<EditTodoView> {
   String _title = '';
 
   bool _isCurrentSnackBarVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _title = context.read<EditTodoBloc>().state.title;
+  }
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
@@ -87,7 +95,7 @@ class _EditTodoViewState extends State<EditTodoView> {
     final isNewTodo = context.select(
       (EditTodoBloc bloc) => bloc.state.isNewTodo,
     );
-    _title = context.read<EditTodoBloc>().state.title; // Set first value for case editing
+    // _title = context.read<EditTodoBloc>().state.title; // Set first value for case editing
 
     return Scaffold(
       appBar: AppBar(
@@ -112,7 +120,10 @@ class _EditTodoViewState extends State<EditTodoView> {
               DueDatePicker(),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: (_title.trim().isNotEmpty && !status.isLoadingOrSuccess) ? _submit : null,
+                onPressed:
+                    (_title.trim().isNotEmpty && !status.isLoadingOrSuccess)
+                        ? _submit
+                        : null,
                 child: status.isLoadingOrSuccess
                     ? CircularProgressIndicator()
                     : Text(
